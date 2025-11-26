@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&family=Rubik&display=swap');
+@font-face {
+    font-family: Roboto;
+    src: url('./fonts/RobotoVariable.ttf');
+}
 
 :root {
     --text: hsl(203, 25%, 89%);

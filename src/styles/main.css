@@ -45,8 +45,11 @@ td {
     font-size: small;
 }
 
-#footer-not-all-entries {
+.hidden {
     display: none;
+}
+
+#footer-not-all-entries {
     text-align: center;
 }
 
@@ -55,7 +58,7 @@ td {
 }
 
 input {
-  outline: none;
+    outline: none;
 }
 
 #showAllButton {

@@ -11,10 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Build
+        run: pnpm build
+
       - name: Create tarball
         env:
           ZSTD_CLEVEL: "3"
-        run: "tar --zstd --create --directory src --file deploy.tar.zst ."
+        run: "tar --zstd --create --directory dist --file deploy.tar.zst ."
 
       - name: Deploy artifact
         run: |

@@ -1,5 +1,15 @@
-const abbrContainer = /** @type {HTMLElement} */ (document.getElementById("abbreviations"));
-const firstLetters = [
+import "../styles/global.css";
+import "../styles/glossary.css";
+
+import "../common";
+
+const abbrContainer = document.getElementById("abbreviations")!;
+const typesContainer = document.getElementById("type")!;
+
+type DetailedEntry = { name: string, heading: string, bold?: boolean };
+type Entry = string | DetailedEntry;
+
+const firstLetters: Entry[] = [
     {
         name: "Hamburg",
         heading: "A"
@@ -64,7 +74,6 @@ const firstLetters = [
     }
 ]
 
-const typesContainer = /** @type {HTMLElement} */ (document.getElementById("type"));
 /* unbekannte Typen (in der csv drin, aber nicht in den Quellen):
     Quellen:
     https://de.wikipedia.org/wiki/Betriebsstellenverzeichnis
@@ -93,7 +102,7 @@ const typesContainer = /** @type {HTMLElement} */ (document.getElementById("type
     ST
     tGUw
 */
-const types = [
+const types: Entry[] = [
     {
         name: "Abnehmeranlage",
         heading: "AA"
@@ -276,38 +285,34 @@ const types = [
     }
 ]
 
-/**
- * @param {string} text 
- */
-function createBoldTextElement(text) {
+function createBoldTextElement(text: string) {
     const textElement = document.createElement("span");
-    textElement.classList.add("bold");
+    textElement.className = "bold";
     textElement.textContent = text;
     return textElement;
 }
 
-/**
- * @param {(string | {name: string;heading: string;bold?: boolean;})[]} list
- * @param {HTMLElement} container
- * @param {boolean} boldInText
- */
-function createWebsiteEntries(list, container, boldInText = false) {
+function createWebsiteEntries(list: Entry[], container: HTMLElement, alwaysBold = false) {
     for (const item of list) {
+        const isStringEntry = typeof item === "string";
+
+        const normalizedItem = isStringEntry ? { name: item, heading: item[0] } : item;
+
         const entry = document.createElement("div");
-        entry.classList.add("abbreviation-entry");
+        entry.className = "abbreviation-entry";
     
         const headingElement = document.createElement("span");
-        headingElement.classList.add("capitalLetter");
-        const heading = item["heading"] ?? item[0];
+        headingElement.className = "capitalLetter";
+
+        const heading = normalizedItem.heading;
         headingElement.textContent = heading;
     
         const nameElement = document.createElement("p");
-        const name = item["name"] ?? item;
+        const name = normalizedItem.name;
         
         let boldCharIndex = name.toLowerCase().indexOf(heading.toLowerCase());
     
-        if ((typeof item === "string" && boldInText) ||
-            (typeof item === "object" && (item.bold ?? boldInText))) {
+        if (normalizedItem.bold || alwaysBold) {
             if (boldCharIndex !== 0) {
                 nameElement.appendChild(document.createTextNode(name.substring(0, boldCharIndex)));
             }
@@ -319,6 +324,7 @@ function createWebsiteEntries(list, container, boldInText = false) {
     
         entry.appendChild(headingElement);
         entry.appendChild(nameElement);
+
         container.appendChild(entry);
     }
 }

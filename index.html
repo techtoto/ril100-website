@@ -7,12 +7,10 @@
     <meta name="description" content="Eine durchsuchbare Liste der DS100-Kürzel">
     <meta name="theme-color" content="#111518">
 
-    <link rel='stylesheet' type='text/css' media='screen' href='global.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="favicon.svg">
 
-    <script src='main.js' type="module" defer></script>
+    <script type="module" src="./src/main/index.ts"></script>
 </head>
 <body>
     <div id="main">
@@ -22,7 +20,7 @@
         <table id="data">
         
         </table>
-        <div id="footer-not-all-entries" class="hint-text">
+        <div id="footer-not-all-entries" class="hint-text hidden">
             <p>Nur die ersten 100 Ergebnisse werden angezeigt. <button type="button" id="showAllButton">Alle anzeigen</button></p>
         </div>
     </div>
