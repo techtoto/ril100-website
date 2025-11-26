@@ -18,7 +18,7 @@ searchBar.addEventListener("input", () => {
         url.hash = `#q=${encodeURIComponent(query)}`;
     }
 
-    history.replaceState({}, "DS100", url);
+    history.replaceState({}, "Ril100", url);
 });
 
 function readSearchQueryFromURL() {

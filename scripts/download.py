@@ -4,7 +4,7 @@ from requests import get
 import re
 
 URL = "https://www.dbinfrago.com/web/schienennetz/betrieb/allgemeine-betriebsinformationen/betriebsstellen-12592996"
-headers = { "User-Agent": "https://github.com/techtoto/ds100-website" }
+headers = { "User-Agent": "https://github.com/techtoto/ril100-website" }
 
 text = get(url=URL, headers=headers).text
 soup = BeautifulSoup(text, features="html.parser")

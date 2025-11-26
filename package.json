@@ -1,5 +1,5 @@
 {
-    "name": "ds100-website",
+    "name": "ril100-website",
     "scripts": {
         "build": "vite build",
         "dev": "vite"

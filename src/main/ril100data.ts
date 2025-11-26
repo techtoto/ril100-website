@@ -40,7 +40,7 @@ async function getRil100CSV() {
 }
 
 async function fetchFreshRil100Data(): Promise<Response> {
-    const response = await fetch(RIL100_CSV_URL, { cache: "no-cache" /* force browser to at least revalidate ds100 file */ });
+    const response = await fetch(RIL100_CSV_URL, { cache: "no-cache" /* force browser to at least revalidate ril100 file */ });
 
     if(!response.ok) {
         throw new Error("Response not okay");
