@@ -16,8 +16,8 @@ const additionalFilesToCache = [
 ];
 
 async function deleteOldCaches() {
-    for(const cacheName of await caches.keys()) {
-        if(cacheName.startsWith(CACHE_ID) && cacheName !== CACHE_NAME) {
+    for (const cacheName of await caches.keys()) {
+        if (cacheName.startsWith(CACHE_ID) && cacheName !== CACHE_NAME) {
             await caches.delete(cacheName);
         }
     }
@@ -70,7 +70,7 @@ self.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
         const cache = await caches.open(CACHE_NAME);
         const cachedResponse = await cache.match(event.request);
 
-        if(cachedResponse) {
+        if (cachedResponse) {
             return cachedResponse;
         }
 

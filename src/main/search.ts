@@ -11,7 +11,7 @@ searchBar.addEventListener("input", () => {
     const url = new URL(window.location.href);
 
     refreshList();
-    
+
     if (query === "") {
         url.hash = "";
     } else {
@@ -24,7 +24,7 @@ searchBar.addEventListener("input", () => {
 function readSearchQueryFromURL() {
     const params = new URLSearchParams(document.location.hash.substring(1));
     const query = params.get("q") || "";
-    
+
     searchBar.value = query;
 
     refreshList();

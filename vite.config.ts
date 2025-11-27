@@ -1,5 +1,5 @@
-import { fileURLToPath } from "url"
-import { defineConfig } from "vite"
+import { fileURLToPath } from "url";
+import { defineConfig } from "vite";
 
 export default defineConfig({
     plugins: [],
