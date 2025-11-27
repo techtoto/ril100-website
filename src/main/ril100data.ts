@@ -27,7 +27,7 @@ async function getRil100CSV() {
             const cache = await caches.open("ril100data");
 
             await cache.put(RIL100_CSV_URL, freshData);
-        }, { timeout: 500 })
+        }, { timeout: 500 });
 
         return await freshData.clone().text();
     } catch (e) {
@@ -80,7 +80,7 @@ function parseFile(text: string): CSVData[] {
             }
 
             return object;
-        })
+        });
 
     return objs;
 }
