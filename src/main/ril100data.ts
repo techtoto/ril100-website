@@ -21,18 +21,23 @@ async function getRil100CSV() {
     try {
         const freshData = await fetchFreshRil100Data();
 
-        setTimeout(async () => {
-            await (await caches.open("ril100data")).put(RIL100_CSV_URL, freshData)
-        }, 500)
+        requestIdleCallback(async () => {
+            if(!window.caches) return
 
-        return freshData.clone().text();
+            const cache = await caches.open("ril100data");
+
+            await cache.put(RIL100_CSV_URL, freshData);
+        }, { timeout: 500 })
+
+        return await freshData.clone().text();
     } catch(e) {
-        console.error("Failed to fetch fresh ril 100 data", e);
+        console.warn("Failed to fetch fresh ril 100 data", e);
 
-        const cachedData = await (await caches.open("ril100data")).match(RIL100_CSV_URL);
+        const cache = await caches.open("ril100data");
+        const cachedData = await cache.match(RIL100_CSV_URL);
 
         if(cachedData) {
-            return cachedData.text();
+            return await cachedData.text();
         } else {
             throw new Error("Unable to find cached ril 100 data");
         }
@@ -105,7 +110,7 @@ function parseLine(line: string): string[] {
         throw new Error("Unterminated string");
     }
 
-    result.push(currentString)
+    result.push(currentString);
 
     return result;
 }
