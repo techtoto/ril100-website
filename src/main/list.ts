@@ -1,12 +1,6 @@
 import { getRil100Data, type Ril100Data } from "./ril100data";
 import { getSearchQuery } from "./search";
 
-let ril100Data: ExtendedRil100Data[] = [];
-
-doRil100DataFetch().then(() => {
-    refreshList(getSearchQuery());
-})
-
 const DEFAULT_ENTRY_LIMIT = 100;
 
 const container = document.getElementById("data")!;
@@ -19,13 +13,17 @@ type ExtendedRil100Data = Ril100Data & {
     isInactive: boolean,
 }
 
-export function refreshList(query = "", showAll = false) {
-    query = query.trim();
+let ril100Data: ExtendedRil100Data[] = [];
+
+doRil100DataFetch();
+
+export function refreshList(showAll = false) {
+    const query = getSearchQuery().trim();
 
     const lowercaseQuery = query.toLowerCase();
     const uppercaseQuery = query.toUpperCase();
     
-    const filteredData = ril100Data!.filter((item) => {
+    const filteredData = ril100Data.filter((item) => {
         const name = item.lowercaseName;
         const code = item["RL100-Code"];
 
@@ -118,27 +116,27 @@ function updateListInDom(items: ExtendedRil100Data[], realLength: number) {
             entryRow.className += " inactive";
         }
 
-        const rl100CodeContainer = document.createElement("td");
-        rl100CodeContainer.className = "rl100Code";
+        const entryCode = document.createElement("td");
+        entryCode.className = "rl100Code";
 
-        const rl100CodeLink = document.createElement("a");
-        rl100CodeLink.textContent = item["RL100-Code"];
-        rl100CodeLink.href = `https://trassenfinder.de/apn/${encodeURIComponent(item["RL100-Code"].replaceAll(" ", "_"))}`;
-        rl100CodeLink.target = "_blank";
+        const entryCodeLink = document.createElement("a");
+        entryCodeLink.textContent = item["RL100-Code"];
+        entryCodeLink.href = `https://trassenfinder.de/apn/${encodeURIComponent(item["RL100-Code"].replaceAll(" ", "_"))}`;
+        entryCodeLink.target = "_blank";
 
-        rl100CodeContainer.appendChild(rl100CodeLink);
+        entryCode.appendChild(entryCodeLink);
 
-        const rl100LongName = document.createElement("td");
-        rl100LongName.className = "rl100LongName";
-        rl100LongName.textContent = item["RL100-Langname"];
+        const entryName = document.createElement("td");
+        entryName.className = "rl100LongName";
+        entryName.textContent = item["RL100-Langname"];
 
-        const rl100TypeLong = document.createElement("td");
-        rl100TypeLong.className = "rl100TypeLong";
-        rl100TypeLong.textContent = item["Typ-Kurz"];
+        const entryType = document.createElement("td");
+        entryType.className = "rl100TypeLong";
+        entryType.textContent = item["Typ-Kurz"];
 
-        entryRow.appendChild(rl100CodeContainer);
-        entryRow.appendChild(rl100LongName);
-        entryRow.appendChild(rl100TypeLong);
+        entryRow.appendChild(entryCode);
+        entryRow.appendChild(entryName);
+        entryRow.appendChild(entryType);
         container.appendChild(entryRow);
     });
 }
@@ -147,6 +145,8 @@ async function doRil100DataFetch() {
     const data = await getRil100Data();
 
     ril100Data = preprocessRil100Data(data);
+
+    refreshList();
 }
 
 function preprocessRil100Data(data: Ril100Data[]): ExtendedRil100Data[] {
@@ -158,11 +158,10 @@ function preprocessRil100Data(data: Ril100Data[]): ExtendedRil100Data[] {
             lowercaseName,
             isMainStation: lowercaseName.includes("hbf"),
             isInactive: item["Betriebszustand"] === "a.B." || item["Betriebszustand"] === "ehemals",
-        }
+        };
     });
 }
 
 showAllButton.addEventListener("click", () => {
-    const query = getSearchQuery();
-    refreshList(query, true);
-})
+    refreshList(true);
+});

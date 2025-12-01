@@ -21,18 +21,23 @@ async function getRil100CSV() {
     try {
         const freshData = await fetchFreshRil100Data();
 
-        setTimeout(async () => {
-            await (await caches.open("ril100data")).put(RIL100_CSV_URL, freshData)
-        }, 500)
+        requestIdleCallback(async () => {
+            if (!window.caches) return
 
-        return freshData.clone().text();
-    } catch(e) {
-        console.error("Failed to fetch fresh ril 100 data", e);
+            const cache = await caches.open("ril100data");
 
-        const cachedData = await (await caches.open("ril100data")).match(RIL100_CSV_URL);
+            await cache.put(RIL100_CSV_URL, freshData);
+        }, { timeout: 500 });
 
-        if(cachedData) {
-            return cachedData.text();
+        return await freshData.clone().text();
+    } catch (e) {
+        console.warn("Failed to fetch fresh ril 100 data", e);
+
+        const cache = await caches.open("ril100data");
+        const cachedData = await cache.match(RIL100_CSV_URL);
+
+        if (cachedData) {
+            return await cachedData.text();
         } else {
             throw new Error("Unable to find cached ril 100 data");
         }
@@ -42,7 +47,7 @@ async function getRil100CSV() {
 async function fetchFreshRil100Data(): Promise<Response> {
     const response = await fetch(RIL100_CSV_URL, { cache: "no-cache" /* force browser to at least revalidate ril100 file */ });
 
-    if(!response.ok) {
+    if (!response.ok) {
         throw new Error("Response not okay");
     }
 
@@ -54,7 +59,7 @@ function parseFile(text: string): CSVData[] {
 
     const headers = parseLine(lines.shift() || "");
 
-    if(!headers) {
+    if (!headers) {
         return [];
     }
 
@@ -64,25 +69,25 @@ function parseFile(text: string): CSVData[] {
 
     const objs = otherLines
         .map(values => {
-            if(values.length !== headers.length) {
+            if (values.length !== headers.length) {
                 throw new Error("Column count mismatch");
             }
 
             const object: CSVData = {};
 
-            for(let i = 0; i < headers.length; i++) {
+            for (let i = 0; i < headers.length; i++) {
                 object[headers[i]] = values[i];
             }
 
             return object;
-        })
+        });
 
     return objs;
 }
 
 function parseLine(line: string): string[] {
     // use quick and dirty algorithm if possible
-    if(!line.includes("\"")) {
+    if (!line.includes("\"")) {
         return line.split(",");
     }
 
@@ -90,10 +95,10 @@ function parseLine(line: string): string[] {
     const result: string[] = [];
     let currentString = "";
 
-    for(const char of line) {
-        if(char === "\"") {
+    for (const char of line) {
+        if (char === "\"") {
             inString = !inString;
-        } else if(char === "," && !inString) {
+        } else if (char === "," && !inString) {
             result.push(currentString);
             currentString = "";
         } else {
@@ -101,11 +106,11 @@ function parseLine(line: string): string[] {
         }
     }
 
-    if(inString) {
+    if (inString) {
         throw new Error("Unterminated string");
     }
 
-    result.push(currentString)
+    result.push(currentString);
 
     return result;
 }
