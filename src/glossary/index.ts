@@ -292,10 +292,9 @@ function createBoldTextElement(text: string) {
     return textElement;
 }
 
-function createWebsiteEntries(list: Entry[], container: HTMLElement, alwaysBold = false) {
+function createWebsiteEntries(list: Entry[], container: HTMLElement, boldByDefault = false) {
     for (const item of list) {
         const isStringEntry = typeof item === "string";
-
         const normalizedItem = isStringEntry ? { name: item, heading: item[0] } : item;
 
         const entry = document.createElement("div");
@@ -309,14 +308,14 @@ function createWebsiteEntries(list: Entry[], container: HTMLElement, alwaysBold 
     
         const nameElement = document.createElement("p");
         const name = normalizedItem.name;
-        
-        let boldCharIndex = name.toLowerCase().indexOf(heading.toLowerCase());
-    
-        if (normalizedItem.bold || alwaysBold) {
+
+        if (normalizedItem.bold ?? boldByDefault) {
+            const boldCharIndex = name.toLowerCase().indexOf(heading.toLowerCase());
+
             if (boldCharIndex !== 0) {
                 nameElement.appendChild(document.createTextNode(name.substring(0, boldCharIndex)));
             }
-            nameElement.appendChild(createBoldTextElement(name[boldCharIndex]));
+            nameElement.appendChild(createBoldTextElement(name[boldCharIndex] ?? ""));
             nameElement.appendChild(document.createTextNode(name.substring(boldCharIndex + 1)));
         } else {
             nameElement.appendChild(document.createTextNode(name));
