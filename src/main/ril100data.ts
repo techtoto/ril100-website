@@ -17,17 +17,25 @@ export async function getRil100Data(): Promise<Ril100Data[]> {
     return parseFile(csvText) as Ril100Data[];
 }
 
+function scheduleTask(task: () => void, timeout: number) {
+    if (window.requestIdleCallback) {
+        window.requestIdleCallback(task, { timeout });
+    } else {
+        window.setTimeout(task, timeout);
+    }
+}
+
 async function getRil100CSV() {
     try {
         const freshData = await fetchFreshRil100Data();
 
-        requestIdleCallback(async () => {
+        scheduleTask(async () => {
             if (!window.caches) return
 
             const cache = await caches.open("ril100data");
 
             await cache.put(RIL100_CSV_URL, freshData);
-        }, { timeout: 500 });
+        }, 500);
 
         return await freshData.clone().text();
     } catch (e) {
