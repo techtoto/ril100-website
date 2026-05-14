@@ -9,7 +9,7 @@ headers = { "User-Agent": "https://github.com/techtoto/ril100-website" }
 text = get(url=URL, headers=headers).text
 soup = BeautifulSoup(text, features="html.parser")
 
-file_url = soup.find(name="a", href=re.compile("Download-betriebsstellen-data\\.xlsx$")).attrs["href"]
+file_url = soup.find(name="a", href=re.compile(r"Betriebsstellencodes.*\.xlsx$")).attrs["href"]
 
 response = get(url=f"https://www.dbinfrago.com/{file_url}", headers=headers)
 with open("Download-betriebsstellen-data.xlsx", "wb") as f:
