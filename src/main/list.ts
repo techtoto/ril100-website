@@ -157,7 +157,7 @@ function preprocessRil100Data(data: Ril100Data[]): ExtendedRil100Data[] {
             ...item,
             lowercaseName,
             isMainStation: lowercaseName.includes("hbf"),
-            isInactive: item["Betriebszustand"] === "a.B." || item["Betriebszustand"] === "ehemals",
+            isInactive: ["a.B.", "ehemals", "stillg."].includes(item["Betriebszustand"]),
         };
     });
 }
